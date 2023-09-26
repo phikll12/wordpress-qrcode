@@ -1,0 +1,1 @@
+<p>Thanh toán của bạn đã được xác nhận thành công</p>
