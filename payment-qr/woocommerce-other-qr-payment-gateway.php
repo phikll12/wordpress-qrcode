@@ -128,13 +128,13 @@ if(custom_payment_is_woocommerce_active()){
 	  load_plugin_textdomain( 'woocommerce-other-qr-payment-gateway', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
 	}
 
-	add_action('wp_enqueue_scripts', 'tutsplus_enqueue_custom_js');
+	// add_action('wp_enqueue_scripts', 'tutsplus_enqueue_custom_js');
 
-	function tutsplus_enqueue_custom_js() {
-		wp_enqueue_script('custom', plugin_dir_url( __FILE__ ) .'assets/js/custom.js', array('jquery'), false, true);
+	// function tutsplus_enqueue_custom_js() {
+	// 	wp_enqueue_script('custom', plugin_dir_url( __FILE__ ) .'assets/js/custom.js', array('jquery'), false, true);
 
-		wp_localize_script('custom', 'my_email_ajax', array('ajax_url' => admin_url('admin-ajax.php')));
-	}
+	// 	wp_localize_script('custom', 'my_email_ajax', array('ajax_url' => admin_url('admin-ajax.php')));
+	// }
 		
 	add_action('woocommerce_thankyou', 'custom_thankyou_message');
 	
@@ -274,12 +274,6 @@ if(custom_payment_is_woocommerce_active()){
 		) );
 	} );
 
-	add_action( 'rest_api_init', function () {
-		register_rest_route( 'custom-order-api/v1', '/get-order-payment', array(
-			'methods' => 'GET',
-			'callback' => 'get_order_payment',
-		) );
-	} );
 }
 
 

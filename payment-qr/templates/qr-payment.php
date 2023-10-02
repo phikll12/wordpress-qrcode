@@ -27,7 +27,7 @@ $transfer_content = $user_id.'z'.$order->id ;
 
 $qr_code_resonnse = payment_fields($user_id,$order,$bank_code,$bank_account_number,$uri);
 
-
+$update_status_url = get_rest_url( null, '/custom-order-api/v1/update-status' );
 
 function payment_fields($user_id,$order,$bank_code,$bank_account_number,$uri){
     
@@ -63,37 +63,35 @@ function payment_fields($user_id,$order,$bank_code,$bank_account_number,$uri){
         ?>
         <section class="woocommerce-customer-details">
             <section class="woocommerce-columns woocommerce-columns--2 woocommerce-columns--addresses col2-set addresses">
-                <div class="woocommerce-column woocommerce-column--1 woocommerce-column--billing-address col-1 qr-payment">
-                    <h2 class="woocommerce-column__title">Quét mã QR để tiến hành thanh toán</h2>
-                    <address>  
-                        <p class="">Bước 1 : Mở ví điện tử/Ngân hàng</p>
-                        <p class="">Bước 2 : Quét mã QR bên dưới</p>
-                        <?php    
-                        if($qr_code_resonnse->statusCode == 200)
-                        {
-                            ?>                        
-                                <img src="<?php echo $qr_code_resonnse->data->base64Image; ?>" />
-                            <?php
-                        }
-                        else {
-                            ?>
-                            <p class="woocommerce_other_payment_bank_code"><?php echo json_encode($qr_code_resonnse); ?></p>
-                            <?php
-                        }
-                        ?>
-                        <p class="">Bước 3 : Xác nhận thanh toán</p>
-                    </address>     
-                </div><!-- /.col-1 -->
 
                 <div class="woocommerce-column woocommerce-column--2 woocommerce-column--shipping-address col-2 ">
-                    <h2 class="woocommerce-column__title qr-payment">Thông tin thanh toán</h2>
+                    <h2 class="woocommerce-column__title">Thông tin thanh toán</h2>
                     <address> 
-                        <p class="">Ngân hàng : <?php echo $bank_namme ?></p>
-                        <p class="">Chủ tài khoản : <?php echo $bank_account_name; ?> </p>
-                        <p class="">Số tài khoản : <?php echo $bank_account_number; ?></p>
-                        <p class="">Số tiền : <?php echo intval($order->total); ?> đ</p>
-                        <p class="">Nội dung : <?php echo $user_id.'z'.$order->id ; ?></p>
-                        <p class="">Chú ý : Quý khách hãy kiểm tra lại thông tin thật rõ ràng trước khi thanh toán. </p>
+                        <div class="qr-payment"> 
+                            <div class="payment-info">
+                                <p class="">Ngân hàng : <?php echo $bank_namme ?></p>
+                                <p class="">Chủ tài khoản : <?php echo $bank_account_name; ?> </p>
+                                <p class="">Số tài khoản : <?php echo $bank_account_number; ?></p>
+                                <p class="">Số tiền : <?php echo intval($order->total); ?> đ</p>
+                                <p class="">Nội dung : <?php echo $user_id.'z'.$order->id ; ?></p>
+                            </div>   
+                            <div class="payment-qr-code">
+                                <?php    
+                                if($qr_code_resonnse->statusCode == 200)
+                                {
+                                    ?>                        
+                                        <img src="<?php echo $qr_code_resonnse->data->base64Image; ?>" />
+                                    <?php
+                                }
+                                else {
+                                    ?>
+                                    <p class="woocommerce_other_payment_bank_code"><?php echo json_encode($qr_code_resonnse); ?></p>
+                                    <?php
+                                }
+                                ?>
+                            </div>   
+                        </div>
+                        <p class="payment-note">Chú ý : Quý khách hãy kiểm tra lại thông tin thật rõ ràng trước khi thanh toán. </p>
                         <button id="accept-payment" class="button alt accept-payment" disabled>Đang chờ thanh toán</button>
                     </address> 
                 </div><!-- /.col-2 -->
@@ -101,8 +99,22 @@ function payment_fields($user_id,$order,$bank_code,$bank_account_number,$uri){
             </section><!-- /.col2-set -->
         </section>
         <style>
-            .qr-payment {
-                text-align: center ;
+            .qr-payment  {
+                display: flex;
+                justify-content: space-between;
+            }
+            .qr-payment .payment-info p {
+                font-size: 18px;
+            }
+            .payment-note {
+                font-size: 18px !important;
+            }
+
+            .qr-payment .payment-qr-code {
+                margin-bottom: 15px;
+            }
+            .qr-payment .payment-qr-code img {
+
             }
 
            .accept-payment
@@ -118,6 +130,8 @@ function payment_fields($user_id,$order,$bank_code,$bank_account_number,$uri){
 
                 var url = '<?php echo $uri ?>';
                 console.log(url);
+                var order_id = '<?php echo $order_id ?>';
+                console.log(order_id);
                 var user_id = '<?php echo $user_id ?>';
                 console.log(user_id);
                 var total = '<?php echo $total ?>';
@@ -126,7 +140,8 @@ function payment_fields($user_id,$order,$bank_code,$bank_account_number,$uri){
                 console.log(bank_account_number);
                 var transfer_content = '<?php echo $transfer_content ?>';
                 console.log(transfer_content);
-                
+                var update_status_url = '<?php echo $update_status_url ?>';
+                console.log(update_status_url);
 
                 // Dữ liệu bạn muốn gửi dưới dạng đối tượng JSON
                 var requestData = {
@@ -146,6 +161,13 @@ function payment_fields($user_id,$order,$bank_code,$bank_account_number,$uri){
                         contentType: "application/json", 
                         success: function (data) {
                             document.getElementById("accept-payment").textContent = "Thanh toán của bạn đã được xác nhận"
+
+                            $.ajax({
+                                url: update_status_url + "?order_id="+order_id,
+                                type: "GET",
+                                success: function (data) {                      
+                                }
+                            });
                         },
                         error: function (error) {
                             

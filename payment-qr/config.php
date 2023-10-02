@@ -2,7 +2,7 @@
 
     class config
     {
-        public static $qr_url = 'http://dothanhtung.name.vn';
+        public static $qr_url = 'https://dothanhtung.name.vn';
 
     }
 

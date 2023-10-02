@@ -14,10 +14,8 @@ class WC_Other_Payment_Gateway extends WC_Payment_Gateway{
 		$this->init_form_fields();	
 		$this->init_settings();
 		$this->enabled = $this->get_option('enabled');
-		$this->title = $this->get_option('title');
-		$this->description = __('Khách hàng chọn thanh toán trả trước bằng QR Code','woocommerce-other-payment-gateway');
-		$this->hide_text_box = $this->get_option('hide_text_box');
-		$this->text_box_required = $this->get_option('text_box_required');
+		$this->title = 'Thanh toán bằng QR Code';
+		$this->description = __('Đơn hàng của bạn sẽ bị giữ và chỉ hoàn thành khi bạn chuyển khoản thành công số tiền mua hàng vào tài khoản của chúng tôi!','woocommerce-other-payment-gateway');
 		$this->order_status = $this->get_option('order_status');
 
 

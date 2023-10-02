@@ -36,22 +36,4 @@ if (!function_exists('callAPI'))   {
         }
     
   }
-
-  if (!function_exists('get_banks'))   {
-    function get_banks()
-    {
-        $api_url = 'https://dothanhtung.name.vn/bank/get-list';
-        $make_call = callAPI('GET', $api_url, '');
-
-        $response  = json_encode($make_call);
-
-        if (is_wp_error($response)) {
-           return '';
-        } else {
-                return $response;
-            }
-        return '';	
-    }
-
-  }
 ?>
